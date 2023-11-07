@@ -2,9 +2,18 @@ from flask import Flask, abort, redirect, render_template, request
 
 from src.repositories.movie_repository import movie_repository_singleton
 
+from src.models import db
+
+from flask_sqlalchemy import SQLAlchemy
+
 app = Flask(__name__)
 
 # TODO: DB connection
+app.config['SQLALCHEMY_DATABASE_URI'] \
+     =  'mysql://root:Datsun240@localhost:3306/movies'
+
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
 
 @app.get('/')
 def index():
@@ -46,3 +55,6 @@ def search_movies():
     if q != '':
         found_movies = movie_repository_singleton.search_movies(q)
     return render_template('search_movies.html', search_active=True, movies=found_movies, search_query=q)
+
+
+
